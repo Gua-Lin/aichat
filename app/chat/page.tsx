@@ -4,6 +4,7 @@ import { Layout } from 'antd';
 import { RobotOutlined } from '@ant-design/icons';
 import ChatWindow from "../components/ChatWindow";
 import SessionList from "../components/SessionList";
+import ModeSelector from "../components/ModeSelector";
 import { useChatStore } from "../store/useChatStore";
 import '../styles/chatStyles.css';
 
@@ -13,12 +14,14 @@ export default function ChatPage() {
   const {
     sessions,
     currentSessionId,
+    currentMode,
     loading,
     sendMessage,
     stopGeneration,
     createNewSession,
     switchSession,
     deleteSession,
+    setMode,
   } = useChatStore();
 
   const currentSession = sessions.find((s) => s.id === currentSessionId);
@@ -53,12 +56,19 @@ export default function ChatPage() {
         />
       </Sider>
       <Content className="chatbot-content">
-        <ChatWindow
-          messages={currentSession?.messages || []}
-          loading={loading}
-          onSendMessage={sendMessage}
-          onStopGeneration={stopGeneration}
+        <ModeSelector
+          currentMode={currentMode}
+          onModeChange={setMode}
         />
+        <div className="chatbot-content-body">
+          <ChatWindow
+            messages={currentSession?.messages || []}
+            loading={loading}
+            currentMode={currentMode}
+            onSendMessage={sendMessage}
+            onStopGeneration={stopGeneration}
+          />
+        </div>
       </Content>
     </Layout>
   );

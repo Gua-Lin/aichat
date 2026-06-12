@@ -35,9 +35,18 @@
 }
 
 .chatbot-content {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   overflow: hidden;
   background: #f5f5f5;
+}
+
+.chatbot-content-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== 会话列表 SessionList ===== */
@@ -161,7 +170,7 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1677ff 0%, #4096ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -451,9 +460,9 @@
 }
 
 .message-avatar-robot {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1677ff 0%, #4096ff 100%);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25);
 }
 
 .message-body {
@@ -772,4 +781,78 @@
 .chat-messages-area::-webkit-scrollbar-thumb:hover,
 .session-list-items::-webkit-scrollbar-thumb:hover {
   background: #bfbfbf;
+}
+
+/* ===== 模式选择器 ModeSelector ===== */
+.mode-selector {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.mode-selector::-webkit-scrollbar {
+  height: 0;
+}
+
+.mode-selector-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid #e8e8e8;
+  border-radius: 20px;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  outline: none;
+  font-family: inherit;
+}
+
+.mode-selector-btn:hover {
+  background: #f0f5ff;
+  border-color: #bae0ff;
+  color: #1677ff;
+}
+
+.mode-selector-btn.active {
+  background: linear-gradient(135deg, #1677ff 0%, #4096ff 100%);
+  border-color: #1677ff;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(22, 119, 255, 0.25);
+  font-weight: 500;
+}
+
+.mode-selector-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.mode-selector-label {
+  line-height: 1;
+}
+
+/* 响应式：移动端模式选择器 */
+@media (max-width: 768px) {
+  .mode-selector {
+    padding: 8px 12px;
+    gap: 4px;
+  }
+
+  .mode-selector-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .mode-selector-icon {
+    font-size: 14px;
+  }
 }

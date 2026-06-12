@@ -1,5 +1,5 @@
 import { useState , useEffect , useCallback , useRef } from "react"
-import type { ChatMessage , ChatSession } from "../types/chatTypes"
+import type { ChatMessage , ChatSession , ChatMode } from "../types/chatTypes"
 import { v4 as uuidv4 } from 'uuid';
 
 //声明用作localStorage的key，避免硬编码字符串，方便维护和修改
@@ -18,10 +18,16 @@ function generateTitle(content: string) : string {
 export function useChatStore() {
     const [sessions, setSessions] = useState<ChatSession[]>([])
     const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
+    const [currentMode, setCurrentMode] = useState<ChatMode | null>(null)
     const [loading, setLoading] = useState(false)
 
     const currentSessionIdRef = useRef(currentSessionId)
+    const currentModeRef = useRef(currentMode)
     const abortRef = useRef<AbortController | null>(null)
+
+    useEffect(() => {
+        currentModeRef.current = currentMode
+    }, [currentMode])
 
     useEffect(() => {
                 currentSessionIdRef.current = currentSessionId
@@ -122,7 +128,7 @@ export function useChatStore() {
             })
         })
 
-        let replyContent = mockReply(userMessage.content)
+        let replyContent = mockReply(userMessage.content, currentModeRef.current)
 
         const robotMessage: ChatMessage = {
             id: generateId(),
@@ -179,28 +185,34 @@ export function useChatStore() {
     }, [])
 
 
+    const setMode = useCallback((mode: ChatMode | null) => {
+        setCurrentMode(mode)
+    }, [])
+
     return {
         sessions,
         currentSessionId,
+        currentMode,
         loading,
         sendMessage,
         stopGeneration,
-        createNewSession,    // ← 添加
-        switchSession,       // ← 添加
-        clearCurrentSession, // ← 可选，清空当前会话
-        deleteSession,       // ← 可选，删除会话
+        createNewSession,
+        switchSession,
+        clearCurrentSession,
+        deleteSession,
+        setMode,
     }
 }
 
 
-function mockReply(input: string) {
-  if (input.includes("React")) {
-    return "React 的核心是组件、状态和 props。建议你先从组件拆分开始练习。"
-  }
+function mockReply(input: string, mode: ChatMode | null) {
+   if (input.includes("React")) {
+   return "React 的核心是组件、状态和 props。建议你先从组件拆分开始练习。"
+ }
 
-  if (input.includes("useEffect")) {
-    return "useEffect 适合处理副作用，比如请求数据、监听事件、定时器等。"
-  }
+ if (input.includes("useEffect")) {
+   return "useEffect 适合处理副作用，比如请求数据、监听事件、定时器等。"
+ }
 
-  return "我现在还是一个模拟 AI，后续可以接入真实大模型接口。"
+ return "我现在还是一个模拟 AI，后续可以接入真实大模型接口。"
 }
