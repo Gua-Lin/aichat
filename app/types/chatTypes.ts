@@ -17,7 +17,28 @@ export interface ChatMessage {
   role: ChatRole
   content: string
   timestamp: number
+  /** 机器人消息携带的错误信息（仅当消息为错误提示时存在） */
+  error?: ChatErrorMessage
 }
+
+/** 机器人回复中的结构化错误信息 */
+export interface ChatErrorMessage {
+  /** 错误类型，用于前端区分展示 */
+  type: ChatErrorType
+  /** 人类可读的错误描述 */
+  message: string
+}
+
+/** 后端返回的错误类型枚举 */
+export type ChatErrorType =
+  | 'API_KEY_MISSING'
+  | 'INVALID_REQUEST'
+  | 'API_RATE_LIMIT'
+  | 'API_AUTH_FAILED'
+  | 'API_TIMEOUT'
+  | 'API_ERROR'
+  | 'NETWORK_ERROR'
+  | 'UNKNOWN';
 
 export interface ChatSession {
   id: string
@@ -97,3 +118,22 @@ export function getModeQuickQuestions(mode: ChatMode): string[] {
   }
 }
 
+/** 错误类型对应的中文提示（供 UI 直接展示） */
+export function getErrorDisplayText(type: ChatErrorType, message?: string): string {
+  const map: Record<ChatErrorType, string> = {
+    API_KEY_MISSING: '⚙️ API Key 未配置，请联系管理员在 `.env.local` 中设置 OPENAI_API_KEY',
+    INVALID_REQUEST: '❌ 请求格式错误，请刷新页面后重试',
+    API_RATE_LIMIT: '⏳ API 调用频率过高，请稍等片刻后再试',
+    API_AUTH_FAILED: '🔑 API Key 无效或已过期，请检查配置',
+    API_TIMEOUT: '⏰ 请求超时，AI 响应时间过长，请稍后重试',
+    API_ERROR: '⚠️ AI 服务暂时不可用，请稍后重试',
+    NETWORK_ERROR: '🌐 无法连接到 AI 服务，请检查网络连接',
+    UNKNOWN: '❓ 发生未知错误，请稍后重试',
+  };
+  return message || map[type] || map.UNKNOWN;
+}
+
+/** 判断错误类型是否支持重试 */
+export function isRetryableError(type: ChatErrorType): boolean {
+  return ['API_TIMEOUT', 'API_ERROR', 'NETWORK_ERROR', 'API_RATE_LIMIT'].includes(type);
+}

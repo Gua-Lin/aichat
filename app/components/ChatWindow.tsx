@@ -62,15 +62,6 @@ export default function ChatWindow({
     }
   };
 
-  const handleRetry = useCallback(
-    (messageId: string) => {
-      if (onRetryMessage) {
-        onRetryMessage(messageId);
-      }
-    },
-    [onRetryMessage],
-  );
-
   return (
     <div className="chat-window">
       {/* 消息区域 */}
@@ -106,14 +97,18 @@ export default function ChatWindow({
             )}
           </div>
         ) : (
-          messages.map((message, idx) => {
-            const isLastAssistant =
-              message.role === 'robot' && idx === messages.length - 1;
+          messages.map((message) => {
+            // 机器人消息（最后一条或有错误）显示重试 / 重新生成按钮
+            const canRetry =
+              message.role === 'robot' &&
+              !loading &&
+              onRetryMessage !== undefined;
+
             return (
               <ChatMessageBubble
                 key={message.id}
                 message={message}
-                onRetry={isLastAssistant ? () => handleRetry(message.id) : undefined}
+                onRetry={canRetry ? () => onRetryMessage!(message.id) : undefined}
               />
             );
           })

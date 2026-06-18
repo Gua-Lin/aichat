@@ -856,3 +856,48 @@
     font-size: 14px;
   }
 }
+
+/* ===== 错误消息卡片 ===== */
+.error-card {
+  background: #fff8f5;
+  border: 1px solid #ffccc7;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 100%;
+}
+
+.error-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.error-card-text {
+  font-size: 14px;
+  color: #594214;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.error-card-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: #ff4d4f;
+  background: #fff;
+  border: 1px solid #ffccc7;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.error-card-retry-btn:hover {
+  background: #fff1f0;
+  border-color: #ff4d4f;
+}

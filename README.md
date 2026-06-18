@@ -164,7 +164,7 @@ React
 TypeScript
 Tailwind CSS
 Next.js Route Handler
-open AI SDK / 普通 fetch SSE
+ZHIPU AI SDK / 普通 fetch SSE
 ```
 
 Next.js App Router 里可以用 `app/api/chat/route.ts` 写后端接口，Route Handler 支持 GET、POST 等方法，适合放聊天接口，避免把大模型 API Key 暴露在前端。([Next.js][1])

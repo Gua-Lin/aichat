@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { ChatMessage } from '../types/chatTypes';
+import { getErrorDisplayText, isRetryableError } from '../types/chatTypes';
 
 interface Props {
   message: ChatMessage;
@@ -77,8 +78,28 @@ function MessageActions({ content, onRetry }: { content: string; onRetry?: () =>
   );
 }
 
+/** 错误消息卡片 */
+function ErrorCard({ error, onRetry }: { error: NonNullable<ChatMessage['error']>; onRetry?: () => void }) {
+  const displayText = getErrorDisplayText(error.type, error.message);
+  const canRetry = isRetryableError(error.type);
+
+  return (
+    <div className="error-card">
+      <div className="error-card-content">
+        <span className="error-card-text">{displayText}</span>
+      </div>
+      {canRetry && onRetry && (
+        <button className="error-card-retry-btn" onClick={onRetry}>
+          <ReloadOutlined /> 重试
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function ChatMessageBubble({ message, onRetry }: Props) {
   const isUser = message.role === 'user';
+  const hasError = !!message.error;
   const time = new Date(message.timestamp).toLocaleTimeString('zh-CN', {
     hour: '2-digit',
     minute: '2-digit',
@@ -94,7 +115,12 @@ export default function ChatMessageBubble({ message, onRetry }: Props) {
 
         {/* 消息内容 */}
         <div className="message-body">
-          <div className={`message-card ${isUser ? 'message-card-user' : 'message-card-robot'}`}>
+          {hasError ? (
+            /* 错误卡片 */
+            <ErrorCard error={message.error!} onRetry={onRetry} />
+          ) : (
+            /* 正常消息卡片 */
+            <div className={`message-card ${isUser ? 'message-card-user' : 'message-card-robot'}`}>
               <div className="markdown-body">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
@@ -133,12 +159,13 @@ export default function ChatMessageBubble({ message, onRetry }: Props) {
                   {message.content}
                 </ReactMarkdown>
               </div>
-          </div>
+            </div>
+          )}
 
-          {/* 时间 + 操作栏 */}
+          {/* 时间 + 操作栏（错误消息不显示操作栏） */}
           <div className="message-footer">
             <span className="message-time">{time}</span>
-            {<MessageActions content={message.content} onRetry={onRetry} />}
+            {!hasError && <MessageActions content={message.content} onRetry={onRetry} />}
           </div>
         </div>
       </div>

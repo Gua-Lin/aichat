@@ -22,6 +22,7 @@ export default function ChatPage() {
     switchSession,
     deleteSession,
     setMode,
+    retryMessage,
   } = useChatStore();
 
   const currentSession = sessions.find((s) => s.id === currentSessionId);
@@ -67,6 +68,7 @@ export default function ChatPage() {
             currentMode={currentMode}
             onSendMessage={sendMessage}
             onStopGeneration={stopGeneration}
+            onRetryMessage={retryMessage}
           />
         </div>
       </Content>
