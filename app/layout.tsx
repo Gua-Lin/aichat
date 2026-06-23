@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import ThemeInit from "./components/theme/ThemeInit";
 import "./globals.css";
+import "./styles/theme.css";
 
 export const metadata: Metadata = {
   title: "AI Chat",
@@ -13,7 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        <ThemeInit />
+        {children}
+      </body>
     </html>
   );
 }

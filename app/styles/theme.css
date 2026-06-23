@@ -1,0 +1,102 @@
+/* ============================================================
+   暗黑模式 CSS Variables
+   亮色主题变量定义在 globals.css 的 :root 中
+   暗色主题通过 [data-theme="dark"] 覆盖
+   ============================================================ */
+
+[data-theme="dark"] {
+  /* ===== 页面背景 ===== */
+  --bg-page: #141414;
+  --bg-sider: #1f1f1f;
+  --bg-card: #262626;
+  --bg-input: #2a2a2a;
+  --bg-input-focus: #1f1f1f;
+
+  /* ===== 文字颜色 ===== */
+  --text-primary: #e8e8e8;
+  --text-secondary: #999;
+  --text-tertiary: #666;
+  --text-placeholder: #555;
+
+  /* ===== 边框颜色 ===== */
+  --border-color: #3a3a3a;
+  --border-light: #333;
+  --border-input-focus: #1677ff;
+
+  /* ===== 主色调（亮暗不变） ===== */
+  --primary: #1677ff;
+  --primary-hover: #4096ff;
+
+  /* ===== 交互态 ===== */
+  --hover-bg: #1a2332;
+  --hover-border: #1677ff;
+  --active-bg: #111d2e;
+  --active-border: #1677ff;
+
+  /* ===== 品牌栏 ===== */
+  --brand-bg: #1f1f1f;
+  --brand-text: #e8e8e8;
+
+  /* ===== 消息气泡 ===== */
+  --robot-bubble-bg: #262626;
+  --robot-bubble-text: #e8e8e8;
+  /* 用户气泡保持蓝色渐变不变 */
+
+  /* ===== 代码块（暗色下基本不变） ===== */
+  --code-bg: #1e1e1e;
+  --code-border: #2d2d2d;
+
+  /* ===== Markdown ===== */
+  --markdown-text: #d9d9d9;
+  --markdown-strong: #f0f0f0;
+  --blockquote-bg: #1a2332;
+  --blockquote-text: #aaa;
+  --inline-code-bg: #2a2a2a;
+  --inline-code-border: #3a3a3a;
+  --inline-code-text: #f97583;
+  --table-header-bg: #2a2a2a;
+  --table-row-hover: #2a2a2a;
+  --table-border: #3a3a3a;
+
+  /* ===== 阴影 ===== */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  /* ===== 模式选择器 ===== */
+  --mode-btn-bg: #2a2a2a;
+  --mode-btn-border: #3a3a3a;
+  --mode-btn-text: #aaa;
+  --mode-btn-hover-bg: #1a2332;
+  --mode-btn-hover-border: #1677ff;
+
+  /* ===== 聊天消息区渐变 ===== */
+  --chat-area-gradient: linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
+
+  /* ===== 错误卡片 ===== */
+  --error-bg: #2a1f1f;
+  --error-border: #5c2a2a;
+  --error-text: #f5a5a5;
+  --error-retry-bg: #2a1f1f;
+  --error-retry-border: #5c2a2a;
+
+  /* ===== 操作按钮 ===== */
+  --action-btn-hover-bg: #333;
+  --action-btn-hover-text: #aaa;
+
+  /* ===== 滚动条 ===== */
+  --scrollbar-thumb: #444;
+  --scrollbar-thumb-hover: #555;
+
+  /* ===== 其他 ===== */
+  --input-area-border: #3a3a3a;
+  --loading-row-bg: #262626;
+  --quick-card-bg: #262626;
+  --quick-card-border: #3a3a3a;
+  --quick-card-hover-bg: #1a2332;
+  --welcome-gradient-start: #1677ff;
+  --welcome-gradient-end: #4096ff;
+  --empty-icon-gradient-start: #1a2332;
+  --empty-icon-gradient-end: #111d2e;
+  --empty-icon-color: #1677ff;
+}

@@ -1,5 +1,102 @@
 @import "tailwindcss";
 
+/* ===== 亮色主题 CSS Variables ===== */
+:root {
+  /* 页面背景 */
+  --bg-page: #f5f5f5;
+  --bg-sider: #fff;
+  --bg-card: #fff;
+  --bg-input: #f5f5f5;
+  --bg-input-focus: #fff;
+
+  /* 文字颜色 */
+  --text-primary: #1a1a1a;
+  --text-secondary: #333;
+  --text-tertiary: #666;
+  --text-placeholder: #bbb;
+
+  /* 边框颜色 */
+  --border-color: #e8e8e8;
+  --border-light: #f0f0f0;
+  --border-input-focus: #1677ff;
+
+  /* 主色调 */
+  --primary: #1677ff;
+  --primary-hover: #4096ff;
+
+  /* 交互态 */
+  --hover-bg: #f0f5ff;
+  --hover-border: #d6e4ff;
+  --active-bg: #e6f4ff;
+  --active-border: #91caff;
+
+  /* 品牌栏 */
+  --brand-bg: #fafafa;
+  --brand-text: #1a1a1a;
+
+  /* 消息气泡 */
+  --robot-bubble-bg: #fff;
+  --robot-bubble-text: #333;
+
+  /* 代码块 */
+  --code-bg: #252526;
+  --code-border: #2d2d2d;
+
+  /* Markdown */
+  --markdown-text: #333;
+  --markdown-strong: #1a1a1a;
+  --blockquote-bg: #f0f5ff;
+  --blockquote-text: #555;
+  --inline-code-bg: #f5f5f5;
+  --inline-code-border: #e8e8e8;
+  --inline-code-text: #e03131;
+  --table-header-bg: #fafafa;
+  --table-row-hover: #fafafa;
+  --table-border: #e8e8e8;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+
+  /* 模式选择器 */
+  --mode-btn-bg: #fafafa;
+  --mode-btn-border: #e8e8e8;
+  --mode-btn-text: #666;
+  --mode-btn-hover-bg: #f0f5ff;
+  --mode-btn-hover-border: #bae0ff;
+
+  /* 聊天消息区渐变 */
+  --chat-area-gradient: linear-gradient(180deg, #f8f9fb 0%, #f5f5f5 100%);
+
+  /* 错误卡片 */
+  --error-bg: #fff8f5;
+  --error-border: #ffccc7;
+  --error-text: #594214;
+  --error-retry-bg: #fff;
+  --error-retry-border: #ffccc7;
+
+  /* 操作按钮 */
+  --action-btn-hover-bg: #f0f0f0;
+  --action-btn-hover-text: #666;
+
+  /* 滚动条 */
+  --scrollbar-thumb: #d9d9d9;
+  --scrollbar-thumb-hover: #bfbfbf;
+
+  /* 其他 */
+  --input-area-border: #e8e8e8;
+  --loading-row-bg: #fff;
+  --quick-card-bg: #fff;
+  --quick-card-border: #e8e8e8;
+  --quick-card-hover-bg: #f0f5ff;
+  --welcome-gradient-start: #1677ff;
+  --welcome-gradient-end: #4096ff;
+  --empty-icon-gradient-start: #e6f4ff;
+  --empty-icon-gradient-end: #f0f5ff;
+  --empty-icon-color: #91caff;
+}
+
 * {
   margin: 0;
   padding: 0;

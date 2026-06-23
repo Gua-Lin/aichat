@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { UserOutlined, RobotOutlined, CopyOutlined, CheckOutlined, ReloadOutlined } from '@ant-design/icons';
+import { UserOutlined, RobotOutlined, CopyOutlined, CheckOutlined, ReloadOutlined, StarOutlined, StarFilled, BulbOutlined } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -9,11 +9,14 @@ import { getErrorDisplayText, isRetryableError } from '../types/chatTypes';
 
 interface Props {
   message: ChatMessage;
+  sessionId?: string;
   onRetry?: () => void;
+  onToggleFavorite?: (sessionId: string, messageId: string) => void;
+  onExplainCode?: (language: string, code: string) => void;
 }
 
 /** 代码块组件 */
-function CodeBlock({ language, value }: { language: string; value: string }) {
+function CodeBlock({ language, value, onExplainCode }: { language: string; value: string; onExplainCode?: (lang: string, code: string) => void }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -30,9 +33,20 @@ function CodeBlock({ language, value }: { language: string; value: string }) {
     <div className="code-block-wrapper">
       <div className="code-block-header">
         <span className="code-block-lang">{language || 'code'}</span>
-        <button className="code-block-copy-btn" onClick={handleCopy}>
-          {copied ? <><CheckOutlined /> 已复制</> : <><CopyOutlined /> 复制</>}
-        </button>
+        <div className="code-block-actions">
+          {onExplainCode && (
+            <button
+              className="code-block-explain-btn"
+              onClick={() => onExplainCode(language || 'text', value)}
+              title="解释这段代码"
+            >
+              <BulbOutlined /> 解释代码
+            </button>
+          )}
+          <button className="code-block-copy-btn" onClick={handleCopy}>
+            {copied ? <><CheckOutlined /> 已复制</> : <><CopyOutlined /> 复制</>}
+          </button>
+        </div>
       </div>
       <SyntaxHighlighter
         style={oneDark}
@@ -51,7 +65,13 @@ function CodeBlock({ language, value }: { language: string; value: string }) {
 }
 
 /** 消息操作栏 - 仅助手消息显示 */
-function MessageActions({ content, onRetry }: { content: string; onRetry?: () => void }) {
+function MessageActions({ content, message, sessionId, onRetry, onToggleFavorite }: {
+  content: string;
+  message: ChatMessage;
+  sessionId?: string;
+  onRetry?: () => void;
+  onToggleFavorite?: (sessionId: string, messageId: string) => void;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -72,6 +92,15 @@ function MessageActions({ content, onRetry }: { content: string; onRetry?: () =>
       {onRetry && (
         <button className="message-action-btn" onClick={onRetry} title="重新生成">
           <ReloadOutlined />
+        </button>
+      )}
+      {sessionId && onToggleFavorite && message.role === 'robot' && (
+        <button
+          className={`message-action-btn ${message.favorited ? 'message-action-favorited' : ''}`}
+          onClick={() => onToggleFavorite(sessionId, message.id)}
+          title={message.favorited ? '取消收藏' : '收藏'}
+        >
+          {message.favorited ? <StarFilled style={{ color: '#faad14' }} /> : <StarOutlined />}
         </button>
       )}
     </div>
@@ -97,7 +126,7 @@ function ErrorCard({ error, onRetry }: { error: NonNullable<ChatMessage['error']
   );
 }
 
-export default function ChatMessageBubble({ message, onRetry }: Props) {
+export default function ChatMessageBubble({ message, sessionId, onRetry, onToggleFavorite, onExplainCode }: Props) {
   const isUser = message.role === 'user';
   const hasError = !!message.error;
   const time = new Date(message.timestamp).toLocaleTimeString('zh-CN', {
@@ -106,7 +135,7 @@ export default function ChatMessageBubble({ message, onRetry }: Props) {
   });
 
   return (
-    <div className={`message-bubble-row ${isUser ? 'user' : 'robot'}`}>
+    <div className={`message-bubble-row ${isUser ? 'user' : 'robot'}`} data-message-id={message.id}>
       <div className="message-bubble-inner">
         {/* 头像 */}
         <div className={`message-avatar ${isUser ? 'message-avatar-user' : 'message-avatar-robot'}`}>
@@ -130,7 +159,7 @@ export default function ChatMessageBubble({ message, onRetry }: Props) {
                       const codeStr = String(children).replace(/\n$/, '');
                       // 判断是否为代码块（有语言标记）
                       if (match) {
-                        return <CodeBlock language={match[1]} value={codeStr} />;
+                        return <CodeBlock language={match[1]} value={codeStr} onExplainCode={onExplainCode} />;
                       }
                       // 行内代码
                       return (
@@ -165,7 +194,7 @@ export default function ChatMessageBubble({ message, onRetry }: Props) {
           {/* 时间 + 操作栏（错误消息不显示操作栏） */}
           <div className="message-footer">
             <span className="message-time">{time}</span>
-            {!hasError && <MessageActions content={message.content} onRetry={onRetry} />}
+            {!hasError && <MessageActions content={message.content} message={message} sessionId={sessionId} onRetry={onRetry} onToggleFavorite={onToggleFavorite} />}
           </div>
         </div>
       </div>

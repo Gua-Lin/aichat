@@ -1,30 +1,42 @@
 import { Button } from 'antd';
-import { SendOutlined, PauseCircleOutlined } from '@ant-design/icons';
+import { SendOutlined, PauseCircleOutlined, ScheduleOutlined } from '@ant-design/icons';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { ChatMessage, ChatMode } from '../types/chatTypes';
+import type { ChatMessage, ChatMode, CodeAttachment } from '../types/chatTypes';
 import { ALL_MODES, getModeQuickQuestions } from '../types/chatTypes';
 import ChatMessageBubble from './ChatMessageBubble';
+import CodeUpload from './code/CodeUpload';
+import CodeInsertModal from './code/CodeInsertModal';
 
 interface Props {
   messages: ChatMessage[];
   loading: boolean;
   currentMode: ChatMode | null;
+  currentSessionId?: string | null;
   onSendMessage: (content: string) => void;
   onStopGeneration?: () => void;
   onRetryMessage?: (messageId: string) => void;
+  onToggleFavorite?: (sessionId: string, messageId: string) => void;
+  onExplainCode?: (language: string, code: string) => void;
+  onShowPlanForm?: () => void;
 }
 
 export default function ChatWindow({
   messages,
   loading,
   currentMode,
+  currentSessionId,
   onSendMessage,
   onStopGeneration,
   onRetryMessage,
+  onToggleFavorite,
+  onExplainCode,
+  onShowPlanForm,
 }: Props) {
   const modeConfig = currentMode ? ALL_MODES.find(m => m.key === currentMode) : null;
   const quickQuestions = currentMode ? getModeQuickQuestions(currentMode) : [];
   const [inputValue, setInputValue] = useState('');
+  const [attachment, setAttachment] = useState<CodeAttachment | null>(null);
+  const [codeModalVisible, setCodeModalVisible] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -44,10 +56,16 @@ export default function ChatWindow({
 
   const handleSend = useCallback(() => {
     if (inputValue.trim() && !loading) {
-      onSendMessage(inputValue);
+      // 如果有代码附件，将其追加到消息内容中
+      let finalContent = inputValue;
+      if (attachment) {
+        finalContent += `\n\n\`\`\`${attachment.language}\n${attachment.code}\n\`\`\``;
+        setAttachment(null);
+      }
+      onSendMessage(finalContent);
       setInputValue('');
     }
-  }, [inputValue, loading, onSendMessage]);
+  }, [inputValue, loading, onSendMessage, attachment]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -108,7 +126,10 @@ export default function ChatWindow({
               <ChatMessageBubble
                 key={message.id}
                 message={message}
+                sessionId={currentSessionId || undefined}
                 onRetry={canRetry ? () => onRetryMessage!(message.id) : undefined}
+                onToggleFavorite={onToggleFavorite}
+                onExplainCode={onExplainCode}
               />
             );
           })
@@ -131,7 +152,27 @@ export default function ChatWindow({
 
       {/* 输入区域 */}
       <div className="chat-input-area">
+        {/* 附件预览 */}
+        {attachment && (
+          <div className="chat-input-attachment-preview">
+            <span className="chat-input-attachment-name">
+              📎 {attachment.filename || `代码片段 (${attachment.language})`}
+            </span>
+            <button
+              className="chat-input-attachment-remove"
+              onClick={() => setAttachment(null)}
+            >
+              ✕
+            </button>
+          </div>
+        )}
         <div className="chat-input-inner">
+          {/* 工具栏按钮 */}
+          <CodeUpload
+            attachment={attachment}
+            onAttachmentChange={setAttachment}
+            onOpenInsertModal={() => setCodeModalVisible(true)}
+          />
           <textarea
             ref={textareaRef}
             value={inputValue}
@@ -161,6 +202,16 @@ export default function ChatWindow({
           )}
         </div>
       </div>
+
+      {/* 代码插入弹层 */}
+      <CodeInsertModal
+        visible={codeModalVisible}
+        onClose={() => setCodeModalVisible(false)}
+        onInsert={(att) => {
+          setAttachment(att);
+          setCodeModalVisible(false);
+        }}
+      />
     </div>
   );
 }

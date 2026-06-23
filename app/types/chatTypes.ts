@@ -19,6 +19,12 @@ export interface ChatMessage {
   timestamp: number
   /** 机器人消息携带的错误信息（仅当消息为错误提示时存在） */
   error?: ChatErrorMessage
+  /** V5: 消息是否被收藏 */
+  favorited?: boolean
+  /** V5: 代码附件（用户上传的代码片段） */
+  codeAttachment?: CodeAttachment
+  /** V5: 学习计划数据（plan 模式下生成） */
+  planData?: PlanData
 }
 
 /** 机器人回复中的结构化错误信息 */
@@ -46,6 +52,14 @@ export interface ChatSession {
   messages: ChatMessage[]
   createdAt: number
   updatedAt: number
+  /** V5: 是否置顶 */
+  pinned?: boolean
+  /** V5: 是否归档 */
+  archived?: boolean
+  /** V5: 自定义排序权重（拖拽排序后写入） */
+  sortOrder?: number
+  /** V5: 标题是否由 AI 生成（true=AI 生成，避免重复调用） */
+  titleGenerated?: boolean
 }
 
 /** 所有可用模式 */
@@ -137,3 +151,51 @@ export function getErrorDisplayText(type: ChatErrorType, message?: string): stri
 export function isRetryableError(type: ChatErrorType): boolean {
   return ['API_TIMEOUT', 'API_ERROR', 'NETWORK_ERROR', 'API_RATE_LIMIT'].includes(type);
 }
+
+// ==================== V5 新增类型 ====================
+
+/** 代码附件（用户上传或粘贴的代码片段） */
+export interface CodeAttachment {
+  language: string
+  code: string
+  filename?: string
+}
+
+/** 学习计划数据（plan 模式下 AI 生成） */
+export interface PlanData {
+  goal: string
+  level: 'beginner' | 'elementary' | 'intermediate' | 'advanced'
+  schedule: string
+  tasks: { text: string; completed: boolean }[]
+}
+
+/** Prompt 模板分类 */
+export type TemplateCategory = '学习' | '编程' | '写作' | '面试' | '通用'
+
+/** Prompt 模板 */
+export interface PromptTemplate {
+  id: string
+  name: string
+  description: string
+  icon: string
+  category: TemplateCategory
+  systemPrompt: string
+  source: 'builtin' | 'custom'
+  createdAt: number
+  usageCount: number
+}
+
+/** 收藏条目 */
+export interface FavoriteItem {
+  id: string
+  sessionId: string
+  sessionTitle: string
+  messageId: string
+  content: string
+  userQuestion: string
+  createdAt: number
+  tags?: string[]
+}
+
+/** 主题模式 */
+export type ThemeMode = 'light' | 'dark' | 'system'
